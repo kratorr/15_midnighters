@@ -13,7 +13,7 @@ def load_attempts(url):
         for record in response_json["records"]:
             yield {
                 'username': record["username"],
-                'timestamp':record["timestamp"],
+                'timestamp': record["timestamp"],
                 'timezone': record["timezone"],
             }
 
@@ -37,14 +37,14 @@ def get_midnighters(records):
         if local_end_night > record_local_datetime > local_start_night:
             midnighters[username].append(
                 record_local_datetime.strftime("%D %R")
-        )
+            )
     return midnighters
 
 
 if __name__ == "__main__":
-    url = "http://devman.org/api/challenges/solution_attempts/"
+    api_url = "http://devman.org/api/challenges/solution_attempts/"
     records = []
-    for record in load_attempts(url):
+    for record in load_attempts(api_url):
         records.append(record)
     midnighters = get_midnighters(records)
     for username, send_times in midnighters.items():
