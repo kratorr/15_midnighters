@@ -11,7 +11,7 @@ def load_attempts(url):
         params = {"page": page}
         response_json = requests.get(url, params=params).json()
         records = response_json["records"]
-        for record in records :
+        for record in records:
             yield {
                 'username': record["username"],
                 'timestamp': record["timestamp"],
