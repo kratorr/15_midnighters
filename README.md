@@ -18,8 +18,23 @@ How to run:
 ```bash
 $ python3 seek_dev_nighters.py
 ```
-After finishing, you will see night owls.
-
+Example:
+```bash
+$ python3 seek_dev_nighters.py 
+id306803365 sent for review: 
+03/21/18 00:06
+03/20/18 00:33
+03/20/18 00:20
+artstr16 sent for review: 
+03/17/18 04:15
+03/17/18 01:47
+03/17/18 01:23
+03/17/18 01:19
+03/17/18 00:55
+03/17/18 00:49
+03/17/18 00:38
+03/17/18 00:05
+```
 # Project Goals
 
 The code is written for educational purposes. Training course for web-developers - [DEVMAN.org](https://devman.org)

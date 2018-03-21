@@ -1,41 +1,36 @@
 import requests
 import pytz
 import collections
-from pytz import timezone
 from datetime import datetime
 
 
 def load_attempts(url):
-    pages = 10
+    response_json = requests.get(url).json()
+    pages = response_json["number_of_pages"]
     for page in range(1, pages+1):
         params = {"page": page}
         response_json = requests.get(url, params=params).json()
         records = response_json["records"]
         for record in records:
             yield {
-                'username': record["username"],
-                'timestamp': record["timestamp"],
-                'timezone': record["timezone"],
+                "username": record["username"],
+                "timestamp": record["timestamp"],
+                "timezone": record["timezone"],
             }
 
 
 def get_midnighters(records):
+    start_night = 0
+    end_night = 6
     midnighters = collections.defaultdict(list)
-    utc = pytz.utc
     for record in records:
+        timestamp = record["timestamp"]
+        timezone_record = pytz.timezone(record["timezone"])
         username = record["username"]
-        record_timezone = timezone(record["timezone"])
-        utc_record_datetime = utc.localize(
-            datetime.utcfromtimestamp(record["timestamp"])
+        record_local_datetime = datetime.fromtimestamp(
+            timestamp, tz=timezone_record
         )
-        record_local_datetime = utc_record_datetime.astimezone(record_timezone)
-        local_start_night = record_local_datetime.replace(
-            hour=0, minute=0, second=0, microsecond=0
-        )
-        local_end_night = record_local_datetime.replace(
-            hour=6, minute=0, second=0, microsecond=0
-        )
-        if local_end_night > record_local_datetime > local_start_night:
+        if end_night > record_local_datetime.hour >= start_night:
             midnighters[username].append(
                 record_local_datetime.strftime("%D %R")
             )
@@ -44,12 +39,8 @@ def get_midnighters(records):
 
 if __name__ == "__main__":
     api_url = "http://devman.org/api/challenges/solution_attempts/"
-    records = []
-    for record in load_attempts(api_url):
-        records.append(record)
-    midnighters = get_midnighters(records)
+    midnighters = get_midnighters(load_attempts(api_url))
     for username, send_times in midnighters.items():
         print(username, "sent for review: ")
-        for send_time in send_times:
-            print(send_time)
-        print()
+        print("\n".join(send_times))
+
