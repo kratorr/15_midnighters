@@ -5,11 +5,12 @@ from datetime import datetime
 
 
 def load_attempts(url):
-    response_json = requests.get(url).json()
-    pages = response_json["number_of_pages"]
-    for page in range(1, pages+1):
+    page = 1
+    count_of_pages = 1
+    while page <= count_of_pages:
         params = {"page": page}
         response_json = requests.get(url, params=params).json()
+        count_of_pages = response_json["number_of_pages"]
         records = response_json["records"]
         for record in records:
             yield {
@@ -17,6 +18,7 @@ def load_attempts(url):
                 "timestamp": record["timestamp"],
                 "timezone": record["timezone"],
             }
+        page +=1
 
 
 def get_midnighters(records):
