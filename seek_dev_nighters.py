@@ -7,7 +7,7 @@ from datetime import datetime
 def load_attempts(url):
     page = 1
     count_of_pages = 1
-    while page <= count_of_pages:
+    while True:
         params = {"page": page}
         response_json = requests.get(url, params=params).json()
         count_of_pages = response_json["number_of_pages"]
@@ -19,6 +19,8 @@ def load_attempts(url):
                 "timezone": record["timezone"],
             }
         page +=1
+        if page > count_of_pages:
+            break
 
 
 def get_midnighters(records):
